@@ -10,12 +10,12 @@
     "dev": "ts-node -r dotenv/config src/index.ts"
   },
   "dependencies": {
-    "@nestjs/common": "^11.1.28",
+    "@nestjs/common": "^11.1.27",
     "@prisma/client": "^7.10.0",
     "@securelens/constants": "*",
     "@securelens/logger": "*",
     "@types/bull": "^4.10.4",
-    "bullmq": "^5.17.0",
+    "bullmq": "^5.80.2",
     "pino": "^9.24.1",
     "reflect-metadata": "^0.2.2"
   },
