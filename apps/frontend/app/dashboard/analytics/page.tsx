@@ -1,0 +1,313 @@
+'use client';
+
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import {
+  AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
+  ResponsiveContainer, Legend,
+} from 'recharts';
+import {
+  TrendingUp, TrendingDown, Shield, AlertTriangle, Activity,
+  Target, Clock, ChevronDown, Download, RefreshCw, ArrowRight,
+  Eye, CheckCircle, XCircle, AlertCircle,
+} from 'lucide-react';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.05 } }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 16 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] as const } }
+};
+
+const SEED_DATA = {
+  findingsOverTime: [
+    { date: 'May 10', critical: 5, high: 12, medium: 18, low: 25 },
+    { date: 'May 11', critical: 3, high: 15, medium: 22, low: 30 },
+    { date: 'May 12', critical: 7, high: 10, medium: 15, low: 20 },
+    { date: 'May 13', critical: 2, high: 18, medium: 25, low: 35 },
+    { date: 'May 14', critical: 4, high: 14, medium: 20, low: 28 },
+    { date: 'May 15', critical: 6, high: 11, medium: 16, low: 32 },
+    { date: 'May 16', critical: 3, high: 13, medium: 19, low: 26 },
+  ],
+  severityData: [
+    { name: 'Critical', value: 12, color: '#ef4444', pct: 12 },
+    { name: 'High', value: 28, color: '#f97316', pct: 28 },
+    { name: 'Medium', value: 35, color: '#eab308', pct: 35 },
+    { name: 'Low', value: 25, color: '#22c55e', pct: 25 },
+  ],
+  topCategories: [
+    { name: 'Security Headers', count: 18, pct: 85 },
+    { name: 'Injection Flaws', count: 14, pct: 65 },
+    { name: 'Authentication', count: 11, pct: 52 },
+    { name: 'Secrets Exposure', count: 8, pct: 38 },
+    { name: 'Vulnerable Dependencies', count: 6, pct: 28 },
+  ],
+  riskScoreOverTime: [
+    { date: 'May 10', score: 72 },
+    { date: 'May 11', score: 68 },
+    { date: 'May 12', score: 75 },
+    { date: 'May 13', score: 64 },
+    { date: 'May 14', score: 78 },
+    { date: 'May 15', score: 82 },
+    { date: 'May 16', score: 84 },
+  ],
+  recentScans: [
+    { workspace: 'acme.com', type: 'Website', status: 'Completed', findings: 51, score: 84, duration: '4m 32s' },
+    { workspace: 'vulnerable-app', type: 'GitHub', status: 'Completed', findings: 38, score: 67, duration: '3m 15s' },
+    { workspace: 'staging.acme.com', type: 'Website', status: 'Completed', findings: 34, score: 72, duration: '5m 01s' },
+    { workspace: 'auth-service', type: 'GitHub', status: 'Completed', findings: 12, score: 91, duration: '2m 44s' },
+    { workspace: 'shopify-clone', type: 'Combined', status: 'Completed', findings: 23, score: 90, duration: '6m 18s' },
+  ],
+  stats: { totalFindings: 100, avgRiskScore: 78, scanCompletionRate: 96, protectedAssets: 428 },
+  categoryTrend: [
+    { week: 'W1', headers: 8, injection: 5, auth: 3 },
+    { week: 'W2', headers: 12, injection: 8, auth: 4 },
+    { week: 'W3', headers: 6, injection: 10, auth: 5 },
+    { week: 'W4', headers: 4, injection: 3, auth: 2 },
+  ],
+  enginePerformance: [
+    { name: 'Nuclei', findings: 45, accuracy: 94 },
+    { name: 'OWASP ZAP', findings: 22, accuracy: 91 },
+    { name: 'Semgrep', findings: 18, accuracy: 96 },
+    { name: 'Nmap', findings: 12, accuracy: 99 },
+    { name: 'Gitleaks', findings: 8, accuracy: 97 },
+  ],
+};
+
+export default function AnalyticsPage() {
+  const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d'>('7d');
+  const [data] = useState(SEED_DATA);
+
+  const stats = [
+    { label: 'Total Findings', value: data.stats.totalFindings, change: '+12%', up: true, icon: AlertTriangle, color: 'text-orange-400', bg: 'bg-orange-500/10' },
+    { label: 'Avg Risk Score', value: data.stats.avgRiskScore, change: '-3 pts', up: false, icon: TrendingDown, color: 'text-red-400', bg: 'bg-red-500/10' },
+    { label: 'Scan Completion', value: `${data.stats.scanCompletionRate}%`, change: '+5%', up: true, icon: Activity, color: 'text-green-400', bg: 'bg-green-500/10' },
+    { label: 'Protected Assets', value: data.stats.protectedAssets, change: '+24', up: true, icon: Shield, color: 'text-blue-400', bg: 'bg-blue-500/10' },
+  ];
+
+  return (
+    <motion.div
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className="space-y-6"
+    >
+      <motion.div variants={itemVariants} className="flex items-center justify-between flex-wrap gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-white tracking-tight">Analytics</h1>
+          <p className="text-sm text-gray-500 mt-0.5">Security metrics, trends, and insights across your assets.</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+            className="p-2 hover:bg-white/[0.04] rounded-xl text-gray-500 hover:text-gray-300 transition-colors">
+            <RefreshCw size={18} />
+          </motion.button>
+          <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+            className="flex items-center gap-2 px-3.5 py-2 rounded-xl border border-white/[0.06] text-gray-400 text-sm hover:bg-white/[0.04] transition-all">
+            <Download size={14} /> Export
+          </motion.button>
+          <select value={timeRange} onChange={(e) => setTimeRange(e.target.value as any)}
+            className="bg-white/[0.04] border border-white/[0.06] rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500/50 transition-colors">
+            <option value="7d">Last 7 days</option>
+            <option value="30d">Last 30 days</option>
+            <option value="90d">Last 90 days</option>
+          </select>
+        </div>
+      </motion.div>
+
+      <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {stats.map((stat) => {
+          const Icon = stat.icon;
+          return (
+            <motion.div key={stat.label} whileHover={{ y: -1 }}
+              className={`${stat.bg} border border-white/[0.04] rounded-xl p-5 transition-all`}>
+              <div className="flex items-center justify-between mb-3">
+                <Icon size={18} className={stat.color} />
+                {stat.up ? <TrendingUp size={14} className="text-green-400" /> : <TrendingDown size={14} className="text-red-400" />}
+              </div>
+              <p className="text-2xl font-bold text-white mb-1">{stat.value}</p>
+              <p className="text-xs text-gray-500">{stat.label}</p>
+              <p className={`text-xs mt-2 ${stat.up ? 'text-green-400' : 'text-red-400'}`}>{stat.change}</p>
+            </motion.div>
+          );
+        })}
+      </motion.div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <motion.div variants={itemVariants} className="lg:col-span-2 rounded-xl bg-white/[0.02] border border-white/[0.04] p-5">
+          <h2 className="text-sm font-semibold text-white mb-4">Findings Over Time</h2>
+          <ResponsiveContainer width="100%" height={260}>
+            <AreaChart data={data.findingsOverTime} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
+              <defs>
+                <linearGradient id="colorCritical" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#ef4444" stopOpacity={0.3} /><stop offset="95%" stopColor="#ef4444" stopOpacity={0} /></linearGradient>
+                <linearGradient id="colorHigh" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#f97316" stopOpacity={0.2} /><stop offset="95%" stopColor="#f97316" stopOpacity={0} /></linearGradient>
+                <linearGradient id="colorMedium" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#eab308" stopOpacity={0.15} /><stop offset="95%" stopColor="#eab308" stopOpacity={0} /></linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
+              <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#6b7280' }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 11, fill: '#6b7280' }} axisLine={false} tickLine={false} />
+              <Tooltip contentStyle={{ backgroundColor: 'rgba(15,15,26,0.95)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 12, fontSize: 12 }} />
+              <Legend wrapperStyle={{ fontSize: 11 }} />
+              <Area type="monotone" dataKey="critical" stackId="1" stroke="#ef4444" fill="url(#colorCritical)" name="Critical" />
+              <Area type="monotone" dataKey="high" stackId="1" stroke="#f97316" fill="url(#colorHigh)" name="High" />
+              <Area type="monotone" dataKey="medium" stackId="1" stroke="#eab308" fill="url(#colorMedium)" name="Medium" />
+            </AreaChart>
+          </ResponsiveContainer>
+        </motion.div>
+
+        <motion.div variants={itemVariants} className="rounded-xl bg-white/[0.02] border border-white/[0.04] p-5">
+          <h2 className="text-sm font-semibold text-white mb-4">Severity Distribution</h2>
+          <div className="flex items-center gap-4">
+            <ResponsiveContainer width={110} height={110}>
+              <PieChart>
+                <Pie data={data.severityData} cx={45} cy={45} innerRadius={25} outerRadius={42} dataKey="value" strokeWidth={0}>
+                  {data.severityData.map((e, i) => <Cell key={i} fill={e.color} />)}
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
+            <div className="space-y-2.5 flex-1">
+              {data.severityData.map(s => (
+                <div key={s.name} className="text-xs">
+                  <span className="flex items-center gap-1.5 text-gray-400 mb-0.5">
+                    <span className="w-2 h-2 rounded-full" style={{ background: s.color }} />
+                    {s.name}
+                  </span>
+                  <span className="text-gray-500 ml-5">{s.value} ({s.pct}%)</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <motion.div variants={itemVariants} className="lg:col-span-2 rounded-xl bg-white/[0.02] border border-white/[0.04] p-5">
+          <h2 className="text-sm font-semibold text-white mb-4">Risk Score Trend</h2>
+          <ResponsiveContainer width="100%" height={180}>
+            <LineChart data={data.riskScoreOverTime} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
+              <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#6b7280' }} axisLine={false} tickLine={false} />
+              <YAxis domain={[50, 100]} tick={{ fontSize: 11, fill: '#6b7280' }} axisLine={false} tickLine={false} />
+              <Tooltip contentStyle={{ backgroundColor: 'rgba(15,15,26,0.95)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 12, fontSize: 12 }} />
+              <Line type="monotone" dataKey="score" stroke="#8b5cf6" strokeWidth={2.5} dot={{ fill: '#8b5cf6', r: 4, strokeWidth: 0 }} activeDot={{ r: 6, fill: '#8b5cf6', stroke: '#fff', strokeWidth: 2 }} name="Risk Score" />
+            </LineChart>
+          </ResponsiveContainer>
+        </motion.div>
+
+        <motion.div variants={itemVariants} className="rounded-xl bg-white/[0.02] border border-white/[0.04] p-5">
+          <h2 className="text-sm font-semibold text-white mb-4">Top Categories</h2>
+          <div className="space-y-3.5">
+            {data.topCategories.map((cat, i) => (
+              <div key={cat.name} className="flex items-center gap-3">
+                <span className="text-[10px] text-gray-600 font-mono w-3">{i + 1}</span>
+                <div className="flex-1">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs text-gray-400">{cat.name}</span>
+                    <span className="text-xs text-gray-500">{cat.count}</span>
+                  </div>
+                  <div className="w-full bg-white/[0.04] rounded-full h-1.5 overflow-hidden">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${cat.pct}%` }}
+                      className="h-full rounded-full bg-gradient-to-r from-violet-600 to-violet-500"
+                      transition={{ duration: 0.8, delay: i * 0.1 }}
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <motion.div variants={itemVariants} className="lg:col-span-2 rounded-xl bg-white/[0.02] border border-white/[0.04] p-5">
+          <h2 className="text-sm font-semibold text-white mb-4">Category Trend</h2>
+          <ResponsiveContainer width="100%" height={180}>
+            <BarChart data={data.categoryTrend}>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
+              <XAxis dataKey="week" tick={{ fontSize: 11, fill: '#6b7280' }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 11, fill: '#6b7280' }} axisLine={false} tickLine={false} />
+              <Tooltip contentStyle={{ backgroundColor: 'rgba(15,15,26,0.95)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 12, fontSize: 12 }} />
+              <Legend wrapperStyle={{ fontSize: 11 }} />
+              <Bar dataKey="headers" fill="#8b5cf6" radius={[4, 4, 0, 0]} name="Headers" />
+              <Bar dataKey="injection" fill="#ef4444" radius={[4, 4, 0, 0]} name="Injection" />
+              <Bar dataKey="auth" fill="#f97316" radius={[4, 4, 0, 0]} name="Auth" />
+            </BarChart>
+          </ResponsiveContainer>
+        </motion.div>
+
+        <motion.div variants={itemVariants} className="rounded-xl bg-white/[0.02] border border-white/[0.04] p-5">
+          <h2 className="text-sm font-semibold text-white mb-4">Engine Performance</h2>
+          <div className="space-y-3.5">
+            {data.enginePerformance.map((eng, i) => (
+              <div key={eng.name} className="flex items-center gap-3">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs text-gray-400">{eng.name}</span>
+                    <span className="text-xs text-gray-500">{eng.findings} findings</span>
+                  </div>
+                  <div className="w-full bg-white/[0.04] rounded-full h-1.5 overflow-hidden">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${eng.accuracy}%` }}
+                      className="h-full rounded-full bg-gradient-to-r from-green-600 to-green-500"
+                      transition={{ duration: 0.8, delay: i * 0.1 }}
+                    />
+                  </div>
+                </div>
+                <span className="text-xs text-green-400 font-semibold w-10 text-right">{eng.accuracy}%</span>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+
+      <motion.div variants={itemVariants} className="rounded-xl bg-white/[0.02] border border-white/[0.04] p-5">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-sm font-semibold text-white">Recent Scans</h2>
+          <button className="text-xs text-violet-400 hover:text-violet-300 transition-colors flex items-center gap-1 group/btn">
+            View all <ArrowRight size={12} className="group-hover/btn:translate-x-0.5 transition-transform" />
+          </button>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs">
+            <thead>
+              <tr className="border-b border-white/[0.04]">
+                {['Workspace', 'Type', 'Status', 'Findings', 'Risk Score', 'Duration'].map(h => (
+                  <th key={h} className="pb-2.5 text-left text-gray-500 font-medium pr-4 text-[11px] uppercase tracking-wider">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-white/[0.04]">
+              {data.recentScans.map((scan, i) => (
+                <motion.tr
+                  key={i}
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.05 }}
+                  className="hover:bg-white/[0.02] transition-colors cursor-pointer"
+                >
+                  <td className="py-3 pr-4 text-gray-200 font-medium">{scan.workspace}</td>
+                  <td className="py-3 pr-4 text-gray-500">{scan.type}</td>
+                  <td className="py-3 pr-4">
+                    <span className="px-2 py-0.5 bg-green-500/10 text-green-400 border border-green-500/20 rounded-md text-[10px] font-medium">{scan.status}</span>
+                  </td>
+                  <td className="py-3 pr-4 font-bold text-white">{scan.findings}</td>
+                  <td className="py-3 pr-4 font-bold" style={{ color: scan.score >= 80 ? '#22c55e' : scan.score >= 60 ? '#eab308' : '#ef4444' }}>
+                    {scan.score}/100
+                  </td>
+                  <td className="py-3 text-gray-500">{scan.duration}</td>
+                </motion.tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
