@@ -12,6 +12,7 @@ import { ScanOrchestratorModule } from './scan-orchestrator/scan-orchestrator.mo
 import { QueueModule } from './queue/queue.module';
 import { AICopilotModule } from './ai/ai-copilot.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { HealthController } from './health.controller';
 
 @Module({
   imports: [
@@ -29,5 +30,6 @@ import { NotificationsModule } from './notifications/notifications.module';
     AnalyticsModule,
     AICopilotModule,
   ],
+  controllers: [HealthController],
 })
 export class AppModule {}

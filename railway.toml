@@ -1,0 +1,18 @@
+# Railway Deployment Configuration
+# Reference: https://docs.railway.app
+
+[build]
+# Install dependencies
+builder = "nixpacks"
+
+[deploy]
+# Start command for the backend service
+startCommand = "cd apps/backend && npm run build && npm run start"
+
+# Health check endpoint
+healthcheckPath = "/api/health"
+healthcheckTimeout = 30
+
+# Restart policy
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 5
