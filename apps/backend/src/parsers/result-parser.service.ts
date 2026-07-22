@@ -634,7 +634,7 @@ export class ResultParserService {
     const testsslParser = new TestsslParser();
 
     // Register parsers for all engines they can handle
-    Object.values(SCANNER_ENGINES).forEach((engine) => {
+    (Object.values(SCANNER_ENGINES) as string[]).forEach((engine: string) => {
       if (nucleiParser.canHandle(engine)) this.parsers.set(engine, nucleiParser);
       if (zapParser.canHandle(engine)) this.parsers.set(engine, zapParser);
       if (zapParserEnhanced.canHandle(engine)) this.parsers.set(engine, zapParserEnhanced);

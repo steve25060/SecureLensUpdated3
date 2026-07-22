@@ -15,10 +15,10 @@
     "declaration": true,
     "noImplicitAny": false,
     "paths": {
-      "@securelens/constants": ["../../packages/constants/src/index.ts"],
-      "@securelens/findings-schema": ["../../packages/findings-schema/src/index.ts"],
-      "@securelens/shared-types": ["../../packages/shared-types/src/index.ts"],
-      "@securelens/shared-utils": ["../../packages/shared-utils/src/index.ts"]
+      "@securelens/constants": ["../../packages/constants/dist/index.js"],
+      "@securelens/findings-schema": ["../../packages/findings-schema/dist/index.js"],
+      "@securelens/shared-types": ["../../packages/shared-types/dist/index.js"],
+      "@securelens/shared-utils": ["../../packages/shared-utils/dist/index.js"]
     }
   },
   "include": ["src/**/*.ts"]
