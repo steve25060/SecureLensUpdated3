@@ -106,7 +106,15 @@ const itemVariants = {
   }
 };
 
-function ScoreGauge({ score, label, name, change, index }: { score: number; label: string; name: string; change: string; index: number }) {
+interface ScoreGaugeProps {
+  score: number;
+  label: string;
+  name: string;
+  change: string;
+  index: number;
+}
+
+function ScoreGauge({ score, label, name, change, index }: ScoreGaugeProps) {
   const { ring, label: labelCls, bg, border } = scoreColor(score);
   const isPositive = change.startsWith('+');
   const [animatedScore, setAnimatedScore] = useState(0);
@@ -253,9 +261,12 @@ export default function DashboardPage() {
         </motion.div>
       ) : (
         <motion.div variants={itemVariants} className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {data.securityScores.map((s, i) => (
-            <ScoreGauge key={s.name} score={s.score} label={s.label} name={s.name} change={s.change} index={i} />
-          ))}
+          {data.securityScores.map((s, i) => {
+            const { score, label, name, change } = s;
+            return (
+              <ScoreGauge key={s.name} score={score} label={label} name={name} change={change} index={i} />
+            );
+          })}
         </motion.div>
       )}
 
