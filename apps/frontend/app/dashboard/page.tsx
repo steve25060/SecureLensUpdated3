@@ -261,12 +261,9 @@ export default function DashboardPage() {
         </motion.div>
       ) : (
         <motion.div variants={itemVariants} className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {data.securityScores.map((s, i) => {
-            const { score, label, name, change } = s;
-            return (
-              <ScoreGauge key={s.name} score={score} label={label} name={name} change={change} index={i} />
-            );
-          })}
+          {data.securityScores.map((s, i) => (
+            <ScoreGauge key={i} score={s.score} label={s.label} name={s.name} change={s.change} index={i} />
+          ))}
         </motion.div>
       )}
 
