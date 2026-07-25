@@ -14,11 +14,22 @@ async function bootstrap() {
   //             https://secure-lens-updated3-frontend-ou5djyntz.vercel.app
   // ─────────────────────────────────────────────────────────────
 
-  const frontendOrigins = (
-    process.env.FRONTEND_ORIGIN || 'http://localhost:3000'
-  )
-    .split(',')
-    .map((url) => url.trim());
+  const nodeEnv = process.env.NODE_ENV || 'development';
+  
+  let frontendOrigins: string[];
+  
+  if (nodeEnv === 'production') {
+    // Production: Hardcoded Vercel URLs
+    frontendOrigins = [
+      'https://secure-lens-updated3-frontend.vercel.app',
+      'https://secure-lens-updated3-frontend-ou5djyntz.vercel.app',
+    ];
+  } else {
+    // Development: Localhost URLs
+    frontendOrigins = (process.env.FRONTEND_ORIGIN || 'http://localhost:3000')
+      .split(',')
+      .map((url) => url.trim());
+  }
 
   app.enableCors({
     origin: frontendOrigins,
@@ -42,7 +53,6 @@ async function bootstrap() {
 
   // Get port from environment
   const port = process.env.PORT || 4000;
-  const nodeEnv = process.env.NODE_ENV || 'development';
 
   await app.listen(port, '0.0.0.0');
   
