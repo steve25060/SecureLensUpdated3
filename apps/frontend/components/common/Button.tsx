@@ -1,16 +1,16 @@
-import { ButtonHTMLAttributes } from "react";
+import { ButtonHTMLAttributes, FC } from "react";
 import clsx from "clsx";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "secondary";
 }
 
-export default function Button({
+const Button: FC<ButtonProps> = ({
   variant = "primary",
   className,
   children,
   ...props
-}: ButtonProps) {
+}) => {
   return (
     <button
       {...props}
@@ -25,4 +25,6 @@ export default function Button({
       {children}
     </button>
   );
-}
+};
+
+export default Button;
