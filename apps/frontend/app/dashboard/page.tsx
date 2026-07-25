@@ -114,7 +114,7 @@ interface ScoreGaugeProps {
   index: number;
 }
 
-function ScoreGauge({ score, label, name, change, index }: ScoreGaugeProps) {
+const ScoreGauge: React.FC<ScoreGaugeProps> = ({ score, label, name, change, index }) => {
   const { ring, label: labelCls, bg, border } = scoreColor(score);
   const isPositive = change.startsWith('+');
   const [animatedScore, setAnimatedScore] = useState(0);
