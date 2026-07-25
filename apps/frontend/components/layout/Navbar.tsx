@@ -25,14 +25,14 @@ export default function Navbar() {
 
         <div className="hidden items-center gap-4 lg:flex">
           {/* Log In button redirects to the login page */}
-          <Link href="/login" legacyBehavior passHref>
+          <Link href="/login">
             <Button variant="secondary" className="px-5 py-5 text-xs">
               Log In
             </Button>
           </Link>
 
           {/* Get Started Free redirects to the registration page */}
-          <Link href="/register" legacyBehavior passHref>
+          <Link href="/register">
             <Button className="px-5 py-5 text-xs">
               Get Started Free
               <ArrowRight className="ml-2 h-3.5 w-3.5" />

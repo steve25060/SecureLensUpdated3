@@ -1,0 +1,37 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "pnpm run build",
+  "devCommand": "pnpm run dev",
+  "installCommand": "pnpm install --frozen-lockfile",
+  "framework": "nextjs",
+  "outputDirectory": "apps/frontend/.next",
+  "publicSource": "apps/frontend/public",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "regions": ["iad"],
+  "env": {
+    "NEXT_PUBLIC_API_URL": {
+      "description": "Backend API endpoint",
+      "default": "https://securelensupdated3.onrender.com/api"
+    },
+    "NEXT_PUBLIC_BACKEND_URL": {
+      "description": "Backend base URL",
+      "default": "https://securelensupdated3.onrender.com"
+    },
+    "NODE_ENV": {
+      "description": "Environment",
+      "default": "production"
+    }
+  },
+  "headers": [
+    {
+      "source": "/api/:path*",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, must-revalidate"
+        }
+      ]
+    }
+  ]
+}

@@ -1,12 +1,32 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 
-const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL ?? '/api';
+/**
+ * API Client Configuration
+ *
+ * DEVELOPMENT: Uses NEXT_PUBLIC_BACKEND_URL or defaults to /api (proxied via Next.js)
+ * PRODUCTION: Uses NEXT_PUBLIC_BACKEND_URL (direct calls to Render backend)
+ *
+ * Environment Variables:
+ * - NEXT_PUBLIC_API_URL: Full URL to API endpoints (e.g., http://localhost:4000/api)
+ * - NEXT_PUBLIC_BACKEND_URL: Backend base URL (e.g., http://localhost:4000)
+ */
+
+// In production, use the full backend URL for direct API calls
+// In development, either use proxy (/api) or direct backend URL
+const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL 
+  ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api`
+  : '/api';
+
+console.log('[API Client] Configured with BASE_URL:', BASE_URL);
+console.log('[API Client] NODE_ENV:', process.env.NODE_ENV);
 
 const api = axios.create({
   baseURL: BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
+  // Enable credentials for cross-origin requests (cookies, auth headers)
+  withCredentials: process.env.NODE_ENV === 'production',
 });
 
 /* ── Request interceptor: attach JWT ─────────────────────────── */
@@ -32,6 +52,7 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && typeof window !== 'undefined') {
       // Clear stale credentials
       localStorage.removeItem('sl_token');
+      localStorage.removeItem('access_token');
       // Redirect to login
       window.location.href = '/login';
     }

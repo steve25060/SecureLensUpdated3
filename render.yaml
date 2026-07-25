@@ -1,0 +1,77 @@
+services:
+  - type: web
+    name: securelens-backend
+    runtime: node
+    region: oregon
+    plan: standard
+    
+    # Build configuration
+    buildCommand: pnpm install && pnpm run build --filter @securelens/backend...
+    startCommand: node apps/backend/dist/main.js
+    
+    # Environment variables (set these in Render dashboard)
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 4000
+      - key: BACKEND_URL
+        value: https://securelensupdated3.onrender.com
+      - key: JWT_SECRET
+        value: your_production_jwt_secret_min_32_chars_change_this_in_render
+      - key: JWT_EXPIRATION
+        value: 24h
+      - key: FRONTEND_ORIGIN
+        value: https://secure-lens-updated3-frontend.vercel.app,https://secure-lens-updated3-frontend-ou5djyntz.vercel.app
+      - key: FRONTEND_URL
+        value: https://secure-lens-updated3-frontend.vercel.app
+      - key: LOG_LEVEL
+        value: warn
+      - key: ENABLE_PRETTY_LOGS
+        value: "false"
+      
+    # Database connection (from Render PostgreSQL service)
+    # Reference: DATABASE_URL from database service
+    
+    # Redis connection (from Render Redis service)
+    # Reference: REDIS_URL from redis service
+    
+    # Health check
+    healthCheckPath: /api/health
+    
+    # Auto-deploy
+    autoDeploy: true
+    
+    # Disk
+    disk:
+      size: 1 GB
+      path: /data
+
+  # PostgreSQL Database
+  - type: pserv
+    name: securelens-db
+    runtime: postgres15
+    region: oregon
+    plan: standard
+    
+    # Database
+    databaseName: securelens
+    
+    # Auto-backup
+    previewPlan: starter
+    ipAllowList:
+      - source: 0.0.0.0/0
+        description: Allow all (production - restrict this)
+
+  # Redis Cache
+  - type: redis
+    name: securelens-redis
+    runtime: redis7
+    region: oregon
+    plan: starter
+    
+    # Auto-backup
+    previewPlan: starter
+    ipAllowList:
+      - source: 0.0.0.0/0
+        description: Allow all (production - restrict this)
