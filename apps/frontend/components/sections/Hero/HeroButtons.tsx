@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import Link from "next/link";
 import Button from "@/components/common/Button";
 import { ArrowRight, PlayCircle } from "lucide-react";
 
@@ -18,10 +19,12 @@ export default function HeroButtons() {
       className="mt-7 flex flex-wrap gap-3"
     >
       <motion.div variants={item}>
-        <Button className="group min-w-48 shadow-violet-700/30">
-          Start Security Analysis Free
-          <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-        </Button>
+        <Link href="/auth/signup">
+          <Button className="group min-w-48 shadow-violet-700/30">
+            Start Security Analysis free →
+            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </Button>
+        </Link>
       </motion.div>
       <motion.div variants={item}>
         <Button variant="secondary" className="min-w-36">
