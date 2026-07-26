@@ -1,37 +1,32 @@
 #!/bin/bash
 
 # SecureLens Universal Start Script
-# Detects which service to run based on environment or service name
+# Detects which service to run based on environment variables
 
-# Default to backend
-SERVICE=${SERVICE:-backend}
-PORT=${PORT:-4000}
+# Check explicit service flag first
+if [ "$FRONTEND_SERVICE" = "true" ]; then
+  echo "🚀 Starting Frontend (Next.js) - FRONTEND_SERVICE=true"
+  cd apps/frontend
+  pnpm start
+  exit $?
+fi
+
+# Fall back to service name detection
+SERVICE_NAME=${RAILWAY_SERVICE_NAME:-unknown}
 
 echo "================================================"
-echo "Starting SecureLens - Service: $SERVICE"
+echo "Starting SecureLens Service: $SERVICE_NAME"
 echo "================================================"
 
-if [ "$SERVICE" = "frontend" ]; then
+if [[ "$SERVICE_NAME" == *"diligent-surprise"* ]] || [[ "$SERVICE_NAME" == *"frontend"* ]]; then
   echo "🚀 Starting Frontend (Next.js)..."
   cd apps/frontend
-  npm run start
-elif [ "$SERVICE" = "backend" ]; then
+  pnpm start
+elif [[ "$SERVICE_NAME" == *"scintillating-strength"* ]] || [[ "$SERVICE_NAME" == *"backend"* ]]; then
   echo "🚀 Starting Backend (NestJS)..."
   node apps/backend/dist/main.js
 else
-  # Try to auto-detect based on hostname or service ID
-  if [ -n "$RAILWAY_SERVICE_NAME" ]; then
-    if [[ "$RAILWAY_SERVICE_NAME" == *"frontend"* ]] || [[ "$RAILWAY_SERVICE_NAME" == "diligent-surprise" ]]; then
-      echo "🚀 Detected Frontend Service (${RAILWAY_SERVICE_NAME})"
-      cd apps/frontend
-      npm run start
-    else
-      echo "🚀 Detected Backend Service (${RAILWAY_SERVICE_NAME})"
-      node apps/backend/dist/main.js
-    fi
-  else
-    # Default to backend
-    echo "🚀 Defaulting to Backend"
-    node apps/backend/dist/main.js
-  fi
+  # Default to backend if unsure
+  echo "⚠️  Service unknown: $SERVICE_NAME, defaulting to Backend"
+  node apps/backend/dist/main.js
 fi
