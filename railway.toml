@@ -1,8 +1,9 @@
 # Railway Configuration for Frontend Service
 
 [build]
-builder = "dockerfile"
-dockerfile = "Dockerfile.frontend"
+builder = "nixpacks"
+# Build frontend with public folder
+buildCommand = "pnpm install --frozen-lockfile && cd apps/frontend && pnpm run build && ls -la public/demo-gallery"
 
 [deploy]
 # Start Next.js frontend
