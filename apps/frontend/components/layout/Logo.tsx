@@ -1,12 +1,8 @@
-import Link from "next/link";
 import { Shield } from "lucide-react";
 
 export default function Logo() {
   return (
-    <Link
-      href="/"
-      className="flex items-center gap-4"
-    >
+    <div className="flex items-center gap-4">
       <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-violet-400/30 bg-violet-600/15 shadow-lg shadow-violet-900/30">
         <Shield className="h-8 w-8 text-violet-400" />
       </div>
@@ -16,6 +12,6 @@ export default function Logo() {
           SecureLens
         </span>
       </div>
-    </Link>
+    </div>
   );
 }

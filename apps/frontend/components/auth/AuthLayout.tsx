@@ -33,7 +33,7 @@ export default function AuthLayout({ children, title, subtitle, showDashboard = 
       >
         <div className="flex min-h-full items-center">
           <div className="mx-auto w-full max-w-xl">
-            <Link href="/" className="inline-flex">
+            <Link href="/" className="inline-flex items-center gap-4">
               <Logo />
             </Link>
             <h1 className="mt-7 text-4xl font-semibold tracking-tight text-white sm:text-5xl">{title}</h1>

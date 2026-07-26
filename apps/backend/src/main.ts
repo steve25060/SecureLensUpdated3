@@ -9,29 +9,17 @@ async function bootstrap() {
   // ─────────────────────────────────────────────────────────────
   // CORS Configuration - Environment-aware
   // ─────────────────────────────────────────────────────────────
-  // DEVELOPMENT: http://localhost:3000, http://localhost:3001
-  // PRODUCTION: https://secure-lens-updated3-frontend.vercel.app (main)
-  //             https://secure-lens-updated3-frontend-ou5djyntz.vercel.app (preview)
-  //             https://secure-lens-updated3-frontend-akz4.vercel.app (preview)
+  // LOCAL: http://localhost:3000, http://localhost:3001
   // ─────────────────────────────────────────────────────────────
 
   const nodeEnv = process.env.NODE_ENV || 'development';
   
   let frontendOrigins: string[];
   
-  if (nodeEnv === 'production') {
-    // Production: Hardcoded Vercel URLs (including preview deployments)
-    frontendOrigins = [
-      'https://secure-lens-updated3-frontend.vercel.app',
-      'https://secure-lens-updated3-frontend-ou5djyntz.vercel.app',
-      'https://secure-lens-updated3-frontend-akz4.vercel.app',
-    ];
-  } else {
-    // Development: Localhost URLs
-    frontendOrigins = (process.env.FRONTEND_ORIGIN || 'http://localhost:3000')
-      .split(',')
-      .map((url) => url.trim());
-  }
+  // Use environment variable for frontend origins, default to localhost
+  frontendOrigins = (process.env.FRONTEND_ORIGIN || 'http://localhost:3000')
+    .split(',')
+    .map((url) => url.trim());
 
   app.enableCors({
     origin: frontendOrigins,
