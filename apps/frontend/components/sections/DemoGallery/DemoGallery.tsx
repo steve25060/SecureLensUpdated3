@@ -161,6 +161,10 @@ export default function DemoGallery({ isOpen, onClose }: DemoGalleryProps) {
                 src={demoImages[currentIndex].src}
                 alt={demoImages[currentIndex].title}
                 className="max-w-full max-h-full object-contain"
+                onError={(e) => {
+                  console.error(`Failed to load image: ${demoImages[currentIndex].src}`);
+                  e.currentTarget.src = demoImages[currentIndex].src;
+                }}
               />
             </motion.div>
           </div>
@@ -219,6 +223,9 @@ export default function DemoGallery({ isOpen, onClose }: DemoGalleryProps) {
                       src={image.src}
                       alt={`Thumbnail ${index + 1}`}
                       className="w-full h-full object-cover pointer-events-none"
+                      onError={(e) => {
+                        console.error(`Failed to load thumbnail: ${image.src}`);
+                      }}
                     />
                   </button>
                 ))}
