@@ -36,3 +36,4 @@ const nextConfig = {
 };
 
 module.exports = nextConfig;
+// Force rebuild Sunday 26 July 2026 01:49:51 PM IST
