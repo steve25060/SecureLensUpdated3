@@ -8,24 +8,30 @@ const nextConfig = {
    *   - Backend: http://localhost:4000
    *   - Proxy: /api/* → http://localhost:4000/api/*
    *
+   * PRODUCTION (Railway):
+   *   - Frontend: https://<your-railway-frontend-url>
+   *   - Backend: https://<your-railway-backend-url>
+   *   - Uses internal domain: http://scintillating-strength.railway.internal:8080
+   *
    * Set NEXT_PUBLIC_BACKEND_URL in .env to control backend URL
    */
   async rewrites() {
     const backendUrl =
       process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000';
 
-    // Use rewrites for local development
+    // Use rewrites for all environments
     return [
       {
         source: '/api/:path*',
-        destination: `${backendUrl}/:path*`,
+        destination: `${backendUrl}/api/:path*`,
       },
     ];
   },
 
   // Allowed domains for images
   images: {
-    domains: ['localhost'],
+    domains: ['localhost', 'scintillating-strength.railway.internal'],
+    unoptimized: process.env.NODE_ENV === 'production', // Optimize for Railway
   },
 };
 
