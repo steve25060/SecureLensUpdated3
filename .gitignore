@@ -83,6 +83,7 @@ dist
 # Gatsby files
 .cache/
 public
+!apps/frontend/public/demo-gallery/
 
 # Serverless Webpack templates
 .serverless/
