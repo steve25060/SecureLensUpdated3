@@ -278,8 +278,8 @@ export function NotificationsTab() {
   return (
     <div className="space-y-4">
       {notifGroups.map((group, gi) => (
-        // @ts-ignore - key is a React special prop, not a component prop
-        <SettingPanel key={`group-${gi}`} title={group.title}>
+        <React.Fragment key={`group-${gi}`}>
+          <SettingPanel title={group.title}>
           <div className="mb-3 grid grid-cols-3 text-right pr-1 gap-4">
             {['Email', 'Browser', 'Slack'].map((h) => (
               <span key={h} className="text-[10px] font-medium text-gray-500 uppercase tracking-wide">{h}</span>
@@ -306,6 +306,7 @@ export function NotificationsTab() {
             );
           })}
         </SettingPanel>
+        </React.Fragment>
       ))}
     </div>
   );
