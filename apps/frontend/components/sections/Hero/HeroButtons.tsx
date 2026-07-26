@@ -1,14 +1,22 @@
+"use client";
+
 import { motion } from "framer-motion";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Button from "@/components/common/Button";
 import { ArrowRight, PlayCircle } from "lucide-react";
 
 export default function HeroButtons() {
+  const router = useRouter();
+
   const container = {
     hidden: {},
     show: { transition: { staggerChildren: 0.12 } },
   };
   const item = { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } };
+
+  const handleSignup = () => {
+    router.push("/register");
+  };
 
   return (
     <motion.div
@@ -19,12 +27,13 @@ export default function HeroButtons() {
       className="mt-7 flex flex-wrap gap-3"
     >
       <motion.div variants={item}>
-        <Link href="/auth/signup">
-          <Button className="group min-w-48 shadow-violet-700/30">
-            Start Security Analysis free →
-            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </Button>
-        </Link>
+        <Button
+          onClick={handleSignup}
+          className="group min-w-48 shadow-violet-700/30 cursor-pointer"
+        >
+          Start Security Analysis free →
+          <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+        </Button>
       </motion.div>
       <motion.div variants={item}>
         <Button variant="secondary" className="min-w-36">
