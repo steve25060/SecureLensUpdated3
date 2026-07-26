@@ -1,17 +1,1 @@
-# Railway Configuration for Frontend Service
-# Use with: railway --config railway-frontend.toml
-
-[build]
-builder = "nixpacks"
-# Build frontend with dependencies
-buildCommand = "pnpm install --frozen-lockfile && cd apps/frontend && pnpm run build"
-
-[deploy]
-# Start Next.js frontend
-startCommand = "cd apps/frontend && pnpm start"
-
-# Frontend uses port 3000
-healthcheckPath = "/"
-healthcheckTimeout = 30
-restartPolicyType = "on_failure"
-restartPolicyMaxRetries = 5
+// Force rebuild Sunday 26 July 2026 01:01:33 PM IST
