@@ -9,6 +9,7 @@ import { ArrowRight } from "lucide-react";
 import AuthCard from "@/components/auth/AuthCard";
 import PasswordInput from "@/components/auth/PasswordInput";
 import SocialLoginButtons from "@/components/auth/SocialLoginButtons";
+import api from "@/lib/api";
 
 const fieldVariants: Variants = {
   hidden: { opacity: 0, y: 18 },
@@ -32,21 +33,14 @@ export default function LoginForm() {
     setError(null);
     setIsLoading(true);
     try {
-      // Use the rewrite proxy endpoint (works in both dev and prod)
-      // This goes to /api which is rewritten to the backend by next.config.js
-      const res = await fetch('/api/auth/login', {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        // Backend expects `username` field; we send the email as the username
-        body: JSON.stringify({ username: email, password }),
+      // Use axios API client configured in lib/api.ts
+      // This handles CORS and uses proper configuration
+      const res = await api.post('/auth/login', { 
+        username: email, 
+        password 
       });
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        throw new Error(body?.message ?? "Invalid credentials. Please try again.");
-      }
-      const data = await res.json();
+      
+      const data = res.data;
       // Store JWT (access_token) securely – for demo we use localStorage
       if (data?.access_token) {
         localStorage.setItem("access_token", data.access_token);
