@@ -278,7 +278,7 @@ export function NotificationsTab() {
   return (
     <div className="space-y-4">
       {notifGroups.map((group, gi) => (
-        <SettingPanel key={group.title} title={group.title}>
+        <SettingPanel key={`group-${gi}`} title={group.title}>
           <div className="mb-3 grid grid-cols-3 text-right pr-1 gap-4">
             {['Email', 'Browser', 'Slack'].map((h) => (
               <span key={h} className="text-[10px] font-medium text-gray-500 uppercase tracking-wide">{h}</span>
