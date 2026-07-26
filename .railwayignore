@@ -1,0 +1,2 @@
+# Don't ignore public folder - we need it for static assets
+# This file ensures the public folder is included in deployments

@@ -3,7 +3,7 @@
 [build]
 builder = "nixpacks"
 # Build frontend with public folder
-buildCommand = "pnpm install --frozen-lockfile && cd apps/frontend && pnpm run build && ls -la public/demo-gallery"
+buildCommand = "pnpm install --frozen-lockfile && cd apps/frontend && pnpm run build && cp -r public ../.next/standalone/apps/frontend/ 2>/dev/null || true"
 
 [deploy]
 # Start Next.js frontend
