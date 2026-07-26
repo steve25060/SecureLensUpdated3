@@ -31,9 +31,13 @@ const nextConfig = {
   // Allowed domains for images
   images: {
     domains: ['localhost', 'scintillating-strength.railway.internal'],
-    unoptimized: process.env.NODE_ENV === 'production', // Optimize for Railway
+    unoptimized: true, // Unoptimize all images for better compatibility
   },
+
+  // Ensure static files in public folder are served correctly
+  staticPageGenerationTimeout: 1000,
+  compress: true,
 };
 
 module.exports = nextConfig;
-// Force rebuild Sunday 26 July 2026 01:49:51 PM IST
+// Force rebuild - Demo gallery deployment fix
