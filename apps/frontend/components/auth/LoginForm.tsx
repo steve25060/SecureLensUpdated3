@@ -32,8 +32,9 @@ export default function LoginForm() {
     setError(null);
     setIsLoading(true);
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:4000';
-      const res = await fetch(`${backendUrl}/api/auth/login`, {
+      // Use the rewrite proxy endpoint (works in both dev and prod)
+      // This goes to /api which is rewritten to the backend by next.config.js
+      const res = await fetch('/api/auth/login', {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
